@@ -27,7 +27,6 @@ const assetPath = (folder, filename) => {
 
 // --- Components ---
 const Badge = ({ children, color = "slate" }) => {
-  // Tailwind 클래스 대신 인라인 스타일로 대체 (Tailwind 설치 안 함)
   const baseStyle = {
     padding: "4px 10px",
     borderRadius: "9999px",
@@ -41,6 +40,8 @@ const Badge = ({ children, color = "slate" }) => {
   const styles = {
     slate: { backgroundColor: "#f1f5f9", color: "#475569", borderColor: "#e2e8f0" },
     blue: { backgroundColor: "#eff6ff", color: "#1d4ed8", borderColor: "#dbeafe" },
+    amber: { backgroundColor: "#fffbeb", color: "#b45309", borderColor: "#fcd34d" }, // Constraint용 색상 추가
+    emerald: { backgroundColor: "#ecfdf5", color: "#047857", borderColor: "#6ee7b7" }, // Example용 색상 추가
   };
 
   const style = { ...baseStyle, ...(styles[color] || styles.slate) };
@@ -59,6 +60,7 @@ const PhraseCard = ({
   onPlay,
 }) => {
   const [imgFailed, setImgFailed] = useState(false);
+  // 이미지가 있고(imageSrc), 로딩에 실패하지 않았을 때만 이미지 표시
   const canShowImg = Boolean(imageSrc) && !imgFailed;
 
   return (
@@ -76,7 +78,7 @@ const PhraseCard = ({
       <div style={{ padding: "20px", borderBottom: "1px solid #f8fafc" }}>
         <div style={{ marginBottom: "8px" }}>
           <Badge color="blue">{keySig}</Badge>
-          <Badge color="slate">{type}</Badge>
+          <Badge color={type === "Example" ? "emerald" : "slate"}>{type}</Badge>
         </div>
         <h3 style={{ fontSize: "18px", fontWeight: "bold", margin: 0, color: "#1e293b" }}>{id}</h3>
       </div>
@@ -137,13 +139,21 @@ const PhraseCard = ({
             <p style={{ fontSize: "14px", fontWeight: "500", color: "#2563eb", margin: 0 }}>{meta.try || "-"}</p>
           </div>
         </div>
+        
+        {meta.constraint && (
+          <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#f59e0b" }} />
+            <span style={{ fontSize: "12px", color: "#64748b" }}>
+              <span style={{ fontWeight: "600", color: "#334155" }}>Constraint:</span> {meta.constraint}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState("library");
   const [playingSrc, setPlayingSrc] = useState(null);
   const audioRef = useRef(null);
 
@@ -182,8 +192,28 @@ const App = () => {
       { id: "GK-Fm-FREE", keySig: "F Minor", type: "Free", imageFile: "f minor FREE.png", audioFile: "f minor FREE.mp3", meta: { character: "Dense, shadowed", try: "Add pedal tone", constraint: "No ornament layer" } },
       { id: "GK-AM-FREE", keySig: "A Major", type: "Free", imageFile: "AM FREE.png", audioFile: "AM FREE.mp3", meta: { character: "Clear, bright", try: "Swap register roles", constraint: "Avoid chromaticism" } },
       { id: "GK-Am-FREE", keySig: "A Minor", type: "Free", imageFile: "a minor FREE.png", audioFile: "a minor FREE.mp3", meta: { character: "Plainchant-like", try: "Add rhythmic lattice", constraint: "No leading tone" } },
+      
+      // ▼▼▼ 새로 추가된 부분 ▼▼▼
+      { 
+        id: "C Minor Example", 
+        keySig: "C Minor", 
+        type: "Example", 
+        imageFile: "", // 이미지를 비워두어 No Preview가 뜨게 함
+        audioFile: "c-minor-ex.mp3", // 오디오 파일명
+        meta: { 
+          character: "Additional Example", 
+          try: "Listen closely", 
+          constraint: "Audio only" 
+        } 
+      },
     ];
-    return defs.map((d) => ({ ...d, imageSrc: assetPath("images", d.imageFile), audioSrc: assetPath("audio", d.audioFile) }));
+
+    // 여기서 "images" 대신 "score" 폴더를 바라보도록 수정됨 (Method B 반영)
+    return defs.map((d) => ({ 
+      ...d, 
+      imageSrc: assetPath("score", d.imageFile), 
+      audioSrc: assetPath("audio", d.audioFile) 
+    }));
   }, []);
 
   return (
