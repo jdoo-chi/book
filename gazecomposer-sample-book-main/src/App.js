@@ -182,6 +182,21 @@ const App = () => {
 
   const motifs = useMemo(() => {
     const defs = [
+      // ▼▼▼ 1. 제일 위로 이동 및 내용 수정됨 ▼▼▼
+      { 
+        id: "C Minor Example", 
+        keySig: "C Minor", 
+        type: "Example", 
+        imageFile: "", 
+        audioFile: "c-minor-ex.mp3", 
+        meta: { 
+          character: "Composed by Doohyun Jung", // 요청하신 작곡가 이름
+          try: "Based on C Minor Leap idea",     // 요청하신 설명 내용
+          constraint: "Audio only" 
+        } 
+      },
+      // ▲▲▲ 여기까지 ▲▲▲
+
       { id: "GK-CM-FREE", keySig: "C Major", type: "Free", imageFile: "CM FREE.png", audioFile: "CM FREE.mp3", meta: { character: "Open, exploratory", try: "Re-orchestrate as texture", constraint: "Keep pulse steady" } },
       { id: "GK-CM-STEP", keySig: "C Major", type: "Step", imageFile: "CM STEP.png", audioFile: "CM STEP.mp3", meta: { character: "Stepwise, lyric", try: "Sequence + register shift", constraint: "No leaps > 3rd" } },
       { id: "GK-CM-LEAP", keySig: "C Major", type: "Leap", imageFile: "CM Leap.png", audioFile: "CM LEAP.mp3", meta: { character: "Bright, wide", try: "Octave displacement", constraint: "Land on chord tones" } },
@@ -192,23 +207,8 @@ const App = () => {
       { id: "GK-Fm-FREE", keySig: "F Minor", type: "Free", imageFile: "f minor FREE.png", audioFile: "f minor FREE.mp3", meta: { character: "Dense, shadowed", try: "Add pedal tone", constraint: "No ornament layer" } },
       { id: "GK-AM-FREE", keySig: "A Major", type: "Free", imageFile: "AM FREE.png", audioFile: "AM FREE.mp3", meta: { character: "Clear, bright", try: "Swap register roles", constraint: "Avoid chromaticism" } },
       { id: "GK-Am-FREE", keySig: "A Minor", type: "Free", imageFile: "a minor FREE.png", audioFile: "a minor FREE.mp3", meta: { character: "Plainchant-like", try: "Add rhythmic lattice", constraint: "No leading tone" } },
-      
-      // ▼▼▼ 새로 추가된 부분 ▼▼▼
-      { 
-        id: "C Minor Example", 
-        keySig: "C Minor", 
-        type: "Example", 
-        imageFile: "", // 이미지를 비워두어 No Preview가 뜨게 함
-        audioFile: "c-minor-ex.mp3", // 오디오 파일명
-        meta: { 
-          character: "Additional Example", 
-          try: "Listen closely", 
-          constraint: "Audio only" 
-        } 
-      },
     ];
 
-    // 여기서 "images" 대신 "score" 폴더를 바라보도록 수정됨 (Method B 반영)
     return defs.map((d) => ({ 
       ...d, 
       imageSrc: assetPath("score", d.imageFile), 
